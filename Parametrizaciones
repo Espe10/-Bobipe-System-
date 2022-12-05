@@ -1,1 +1,18 @@
+#ubicaciones de las letras lo anoto x y z, revisar bien
+a = -60, 200, 100
+h = -20, 200, 100
+l = 20, 200, 100
+o = 60, 200, 100
+
+#ubicaciones lugares para escribir
+#pondre la forma no manual
+#La funcion da la cantidad de posiciones de las letras que se tienen, hay que revisar bien las medidas y espaciados
+#luego hay que conectar la letras del escrito con la lista generada
+def llega(letras):
+  pos = list()
+  for i in range(1,letras + 1):
+    j = i//5
+    k = (100- 30* j,80 + 20 *i,100)
+    pos.append(k)
+  return pos
 
