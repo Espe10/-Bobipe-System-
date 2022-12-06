@@ -1,28 +1,28 @@
-def coordenadas_home(letra): # El lugar donde se deben tomar y dejar las letras
-  if letra == 'h':
-    return (x,y,z)
-  elif letra == 'o':
-    return (x,y,z)
-  elif letra == 'l':
-    return (x,y,z)
-  elif letra == 'a':
-    return (x,y,z)
-  else:   # no hemos hecho esa letra :C
-    return () # hacer que el robot se mueva como diciendo "nono". O que se mueva pa arriba (algun gesto que indique que esa letra no está)
+area_trabajo = ['(x,y,z,)','(a,b,c)','()','etc'] # lista que contiene todos los espacios donde se pueden estampar las letras
 
 def texto():      #Ingresa un texto y lo separa en elementos de una lista.
  caracteres = input("Ingresa Texto: ")
  lista = list(caracteres)
  return lista
 
-# La metodología es -> dar texto -> dividirlo en partes -> tomar primera letra, estampar, dejar -> reiterar con todas
-# ! caso especial ! : los espacios, ns si en braille los espacios son literalmente espacios¿?
+# str -> (00,00,00)
+# recibe una letra y devuelve las coordenadas donde se guarda esa letra
+def coordenadas_home2(letra):                                            #lo mismo que la funcion de arriba pero con un diccionario, + bonito
+ Dicc = {'':(algo alto),'h':(xyz),'o':(123),'l':(mno),'a':(987)}
 
-# Parametrización espacios pa escribir: (esta parte va a ser un dolor de cabeza kjgbkjv)
+ """if letra == '': # la letra es un espacio     no se si el caso de los espacios debería ir en esta función, creo que no.
+   return #no se que devolver """
+ if letra in Dicc:
+   return Dicc[letra]
+ else: print("0h n0! No hemos creado esa letra :C")
 
-area_trabajo = ['(x,y,z,)','(a,b,c)','()','etc'] # lista que contiene todos los espacios donde se pueden estampar las letras
-
-for i in range(0,len(texto())):  # toma el primer valor de la lista 'texto' y le asocia la primera posición de la lista area_trabajo, reitera. (HACER UN DICCIONARIO¿?)
-  posicion_i = i,area_trabajo[i] # FALTA UNIR TODOS ESTOS EN 1 SOLA LISTA
-
-print(posicion_i)
+ def mover_roboc(lista, area):    #Casos especiales: si el texto es más largo que el area de trabajo
+   for i in range(len(lista)):
+    letra = lista[i]
+    tomar = coordenadas_home2(letra)
+    "encender imán" # !! falta la instruccion de encender/ apagar el imán !!
+    set.joints(tomar) #tomar la letra
+    # ns si vamos a posicionar antes de estampar¿?
+    set.joints(area[i])    # estampar la letra
+    set.joints(tomar) # lleva la letra de vuelta
+    "apagar imán"
