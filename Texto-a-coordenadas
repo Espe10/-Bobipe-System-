@@ -1,0 +1,28 @@
+def coordenadas_home(letra): # El lugar donde se deben tomar y dejar las letras
+  if letra == 'h':
+    return (x,y,z)
+  elif letra == 'o':
+    return (x,y,z)
+  elif letra == 'l':
+    return (x,y,z)
+  elif letra == 'a':
+    return (x,y,z)
+  else:   # no hemos hecho esa letra :C
+    return () # hacer que el robot se mueva como diciendo "nono". O que se mueva pa arriba (algun gesto que indique que esa letra no está)
+
+def texto():      #Ingresa un texto y lo separa en elementos de una lista.
+ caracteres = input("Ingresa Texto: ")
+ lista = list(caracteres)
+ return lista
+
+# La metodología es -> dar texto -> dividirlo en partes -> tomar primera letra, estampar, dejar -> reiterar con todas
+# ! caso especial ! : los espacios, ns si en braille los espacios son literalmente espacios¿?
+
+# Parametrización espacios pa escribir: (esta parte va a ser un dolor de cabeza kjgbkjv)
+
+area_trabajo = ['(x,y,z,)','(a,b,c)','()','etc'] # lista que contiene todos los espacios donde se pueden estampar las letras
+
+for i in range(0,len(texto())):  # toma el primer valor de la lista 'texto' y le asocia la primera posición de la lista area_trabajo, reitera. (HACER UN DICCIONARIO¿?)
+  posicion_i = i,area_trabajo[i] # FALTA UNIR TODOS ESTOS EN 1 SOLA LISTA
+
+print(posicion_i)
