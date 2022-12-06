@@ -1,28 +1,46 @@
-area_trabajo = ['(x,y,z,)','(a,b,c)','()','etc'] # lista que contiene todos los espacios donde se pueden estampar las letras
+area_trabajo = ['(x,y,z,)','(a,b,c)','()','etc']           # lista que contiene en orden todos los espacios donde se pueden estampar las letras
+Dicc = {'':(456),'h':(789),'o':(123),'l':(666),'a':(987)}  # Diccionario con todas las letras creadas y la coordenada donde se guardan + el espacio en blanco
 
-def texto():      #Ingresa un texto y lo separa en elementos de una lista.
- caracteres = input("Ingresa Texto: ")
+
+def texto():                                               #Ingresa un texto, chequea que sea válido y lo separa en elementos de una lista
+ caracteres = input("¿Qué quieres escribir en braille?: ")
  lista = list(caracteres)
+ if len(lista)>len(area_trabajo):                          # verificar largo
+  X = len(lista)-len(area_trabajo)
+  print("El texto ingresado es", X, "caracteres más largo de lo permitido")
+  return texto()
+
+ for i in range(len(lista)):                               #verificar validez caracteres
+   existe = bool(lista[i] in Dicc)
+   if existe == False:
+    print("El texto introducido tiene caracteres que no hemos creado :(")
+    return texto()
  return lista
 
-# str -> (00,00,00)
-# recibe una letra y devuelve las coordenadas donde se guarda esa letra
-def coordenadas_home2(letra):                                            #lo mismo que la funcion de arriba pero con un diccionario, + bonito
- Dicc = {'':(algo alto),'h':(xyz),'o':(123),'l':(mno),'a':(987)}
 
- """if letra == '': # la letra es un espacio     no se si el caso de los espacios debería ir en esta función, creo que no.
-   return #no se que devolver """
+# str -> (x,y,z)
+# recibe una letra y devuelve las coordenadas cartesianas donde se guarda esa letra
+def coordenadas_home(letra):
  if letra in Dicc:
    return Dicc[letra]
- else: print("0h n0! No hemos creado esa letra :C")
+ else: print("0h n0!") # (nunca debería ocurrir esto ya que la función texto() verifica que existan las letras)
 
- def mover_roboc(lista, area):    #Casos especiales: si el texto es más largo que el area de trabajo
-   for i in range(len(lista)):
-    letra = lista[i]
-    tomar = coordenadas_home2(letra)
-    "encender imán" # !! falta la instruccion de encender/ apagar el imán !!
-    set.joints(tomar) #tomar la letra
+
+# Si llegamos aquí es porque el texto tiene solo caracteres permitidos y entra en el área de trabajo
+
+def mover_roboc(lista, area):    
+  lista_inv = list(reversed(lista))               # invierte la lista para estampar el texto "en espejo"
+  for i in range(len(lista)):
+    letra = lista_inv[i]
+    tomar = coordenadas_home(letra)
+    
+    robot.set_joints(position_to_dof(tomar))      #tomar la letra
+    "encender imán"                               # !! falta la instruccion de encender/ apagar el imán !!
+    time.sleep(4)
+    
     # ns si vamos a posicionar antes de estampar¿?
-    set.joints(area[i])    # estampar la letra
-    set.joints(tomar) # lleva la letra de vuelta
+    
+    robot.set_joints(position_to_dof(area[i]))    # estampar la letra
+    robot.set_joints(position_to_dof(tomar))      # lleva la letra de vuelta
     "apagar imán"
+    
