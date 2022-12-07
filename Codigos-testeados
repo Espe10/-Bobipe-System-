@@ -1,0 +1,19 @@
+# Codigo para poner A en pos 1
+
+robot.set_joints(15, 61, 36)
+time.sleep(2)
+robot.set_joints(15, 61, 42)
+time.sleep(2)
+robot.set_joints(15, 61, 32)
+time.sleep(2)
+robot.set_joints(-34, -11, 110) # posicionarse antes de bajar
+time.sleep(2)
+robot.set_joints(-34, -7, 150) # bajar (ajustar ángulo pa estampar)
+time.sleep(5)
+robot.set_joints(-34, -11, 110)
+time.sleep(2)
+robot.set_joints(15, 61, 36)
+time.sleep(2)
+robot.set_joints(15, 61, 42)
+time.sleep(2)
+robot.set_joints(15, 61, 36)
