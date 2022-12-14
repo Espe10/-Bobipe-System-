@@ -1,0 +1,139 @@
+import time
+from client import RobotClient
+
+robot = RobotClient(address="192.168.0.12")
+
+import numpy as np
+
+
+def position_to_dof(x, y, z):
+    q = [0, 0, 0]
+    l = [55, 39, 135, 147, 66]
+
+    # Calculations
+    q[0] = np.arctan(y / x)
+
+    q[2] = np.arccos(
+        (
+            (np.sqrt(x**2 + y**2) - l[4]) ** 2
+            + (z - l[1] - l[0]) ** 2
+            + -l[2] ** 2
+            + -l[3] ** 2
+        )
+        / (2 * l[2] * l[3])
+    )
+
+    q[1] = (
+        np.pi / 2
+        + -np.arctan((z - l[1] - l[0]) / (np.sqrt(x**2 + y**2) - l[4]))
+        + -np.arctan((l[3] * np.sin(q[2])) / (l[2] + l[3] * np.cos(q[2])))
+    )
+
+    # Formatting
+    # El robot solo entiende grados sexagesimales y enteros
+    q0 = int(np.round(q[0] * 180 / np.pi, 0))
+    q1 = int(np.round(q[1] * 180 / np.pi, 0))
+    q2 = int(np.round(q[2] * 180 / np.pi, 0))
+
+    return q0, q1, q2
+
+def llega(letras):
+  pos = list()
+  for i in range(0,len(letras)):
+    j = i//8
+    k = (150 + 20 * (i%8), -100 + 30 *j, 160 - 3*(i%8))
+    pos.append(k)
+  return pos
+
+def posl(letra):
+    posletra = (0, 61, 40)
+    if letra=="a":
+        posletra= (15, 61, 40)
+    elif letra=="h":
+        posletra= (5, 61, 40)
+    elif letra=="l":
+        posletra= (-5, 61, 40)
+    elif letra=="o":
+        posletra= (-15, 61, 40)
+    print(posletra, letra)
+    return posletra
+
+def estampar(texto):
+    pos = llega(texto)
+    print(pos)
+    for i in range(0, len(texto)):
+        if texto[i]== " ":
+            print("nada")#hacer algo visual
+        else:
+            posletra = posl(texto[i])
+            robot.set_joints(posletra[0], posletra[1], posletra[2]- 17)
+            time.sleep(2)
+            robot.set_joints(posletra[0], posletra[1], posletra[2]-2)
+            time.sleep(3)
+            robot.set_joints(posletra[0], posletra[1], posletra[2]- 17)
+            time.sleep(2)
+            k= pos[i]
+            posicion= position_to_dof(k[0], k[1], k[2])
+            robot.set_joints(posicion[0], posicion[1], posicion[2] -20 + i)
+            time.sleep(2)
+            robot.set_joints(posicion[0], posicion[1], posicion[2]-15 + i)
+            time.sleep(2)
+            p = position_to_dof(k[0], k[1], k[2] - 30)
+            robot.set_joints(p[0], p[1], p[2])
+            time.sleep(5)
+            robot.set_joints(posicion[0], posicion[1], posicion[2]- 10)
+            time.sleep(2)
+            robot.set_joints(posletra[0], posletra[1], posletra[2]- 17)
+            time.sleep(2)
+            robot.set_joints(posletra[0], posletra[1], posletra[2]-5)
+            time.sleep(3)
+            robot.set_joints(posletra[0], posletra[1], posletra[2]- 17)
+            time.sleep(2)
+
+
+
+def texto():
+    texto= input("¿Qué quieres escribir en braille?: ")# Ingresa un texto, chequea que sea válido y lo separa en elementos de una lista
+    if len(texto) > 56:  # verificar largo
+        X = len(texto) - 56
+        print("El texto ingresado es", X, "caracteres más largo de lo permitido")
+        return texto()
+
+    Dicc = ["a","h","o","l"," "]
+    for i in range(len(texto)):  # verificar validez caracteres
+        existe = bool(texto[i] in Dicc)
+        if existe == False:
+            print("El texto introducido tiene caracteres que no hemos creado :(")
+
+    llega(texto)
+    estampar(texto)
+
+def parametrizar():
+    robot.set_joints(15,61 ,30)
+    time.sleep(3)
+    robot.set_joints(5,61 ,30)
+    time.sleep(3)
+    robot.set_joints(-5,61 ,30)
+    time.sleep(3)
+    robot.set_joints(-15,61 ,30)
+    time.sleep(3)
+    robot.set_joints(-15, 61, 15)
+    time.sleep(1)
+    n = position_to_dof(150, -100, 160)
+    robot.set_joints(n[0], n[1], n[2])
+    time.sleep(3)
+    n = position_to_dof(290, -100, 140)
+    robot.set_joints(n[0], n[1], n[2])
+    time.sleep(3)
+    n = position_to_dof(150, 100, 160)
+    robot.set_joints(n[0], n[1], n[2])
+    time.sleep(3)
+    n = position_to_dof(290, 100, 140)
+    robot.set_joints(n[0], n[1], n[2])
+    time.sleep(3)
+    robot.set_joints(0, 0, 90)
+
+if input("Quiere parametrizar? ") == "si":
+    parametrizar()
+texto()
+robot.set_joints(0, 0,90)
